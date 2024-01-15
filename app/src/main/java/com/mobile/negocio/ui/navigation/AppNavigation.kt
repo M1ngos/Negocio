@@ -52,7 +52,7 @@ fun AppNavigation() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Views.DashView.name,
+            startDestination = Views.RegisterView.name,
             modifier = Modifier
                 .padding(paddingValues)
             ) {

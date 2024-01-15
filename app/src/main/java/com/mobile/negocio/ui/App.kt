@@ -7,7 +7,5 @@ import com.mobile.negocio.ui.navigation.AppNavigation
 
 @Composable
 fun App() {
-    Scaffold (modifier = Modifier) {
         AppNavigation()
-    }
 }
