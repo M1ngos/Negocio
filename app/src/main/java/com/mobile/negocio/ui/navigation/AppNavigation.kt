@@ -104,7 +104,6 @@ fun AppNavigation(
                 .padding(paddingValues)
             ) {
             composable(route = Views.RegisterView.name) {
-//                RegisterScreen { navController.navigate(RegistryEntryDestination.route) }
                 RegisterScreen(
                     navigateToRegistryEntry = { navController.navigate(RegistryEntryDestination.route) },
                     navigateToRegistryEntryAlt = {  navController.navigate(RegistryEntryDestinationAlt.route) }
