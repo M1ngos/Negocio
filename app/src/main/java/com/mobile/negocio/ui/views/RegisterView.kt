@@ -30,11 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.mobile.negocio.R
+import com.mobile.negocio.ui.navigation.NavRegistryItem
 import com.mobile.negocio.ui.navigation.navRegistryItems
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RegisterScreen (
     modifier: Modifier = Modifier,
@@ -53,7 +54,6 @@ fun RegisterScreen (
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { if(selectedTabIndex == 0 ) navigateToRegistryEntry() else navigateToRegistryEntryAlt() },
-//                onClick = navigateToItemEntry,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
             ) {
@@ -64,11 +64,10 @@ fun RegisterScreen (
             }
         }
     ) {
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-
             LaunchedEffect(selectedTabIndex) {
                 pagerState.animateScrollToPage(selectedTabIndex)
             }
@@ -97,14 +96,31 @@ fun RegisterScreen (
                     .fillMaxWidth()
                     .weight(1f)
             ) {index ->
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = navRegistryItems[index].title)
+                when(index) {
+                    0 -> IncomeList()
+                    1 -> DebtsList()
                 }
             }
         }
     }
+}
 
+@Composable
+fun DebtsList() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "Noooo!")
+    }
+}
+
+@Composable
+fun IncomeList() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "Money Money Moneyyy")
+    }
 }
