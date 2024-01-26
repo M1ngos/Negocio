@@ -24,7 +24,7 @@ val navItems: List<NavItem> = listOf(
         label = "Registos",
         selectedIcon = Icons.Filled.Create,
         unselectedIcon = Icons.Outlined.Create,
-        route = Views.RegisterView.name.toString()
+        route = Views.RegisterView.name
     ),
     NavItem(
         label = "Resumo",

@@ -4,4 +4,5 @@
     <string name="nav_register">Registos</string>
     <string name="nav_dash">Resumo</string>
     <string name="nav_debts">Devedores</string>
+    <string name="add">Adicionar registo</string>
 </resources>
