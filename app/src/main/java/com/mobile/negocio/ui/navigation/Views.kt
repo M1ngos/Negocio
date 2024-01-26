@@ -5,3 +5,4 @@ enum class Views {
     DashView,
     DebtsView
 }
+

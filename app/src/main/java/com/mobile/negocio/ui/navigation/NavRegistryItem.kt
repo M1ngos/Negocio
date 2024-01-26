@@ -4,7 +4,6 @@ data class NavRegistryItem(
     val title: String,
 )
 
-
 val navRegistryItems = listOf(
     NavRegistryItem(
         title = "Receitas",

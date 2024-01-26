@@ -2,31 +2,23 @@ package com.mobile.negocio.ui.views
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.mobile.negocio.R
-import com.mobile.negocio.ui.navigation.Views
 import com.mobile.negocio.ui.navigation.navRegistryItems
 
 
@@ -46,7 +37,9 @@ import com.mobile.negocio.ui.navigation.navRegistryItems
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen (
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToRegistryEntry: () -> Unit,
+    navigateToRegistryEntryAlt: () -> Unit,
 ) {
     var selectedTabIndex by remember {
         mutableStateOf(0)
@@ -59,7 +52,8 @@ fun RegisterScreen (
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { if(selectedTabIndex == 0 ) "" else "" },
+                onClick = { if(selectedTabIndex == 0 ) navigateToRegistryEntry() else navigateToRegistryEntryAlt() },
+//                onClick = navigateToItemEntry,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
             ) {

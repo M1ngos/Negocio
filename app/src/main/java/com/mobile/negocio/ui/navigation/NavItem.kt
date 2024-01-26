@@ -19,6 +19,7 @@ data class NavItem (
     val route: String
 )
 
+
 val navItems: List<NavItem> = listOf(
     NavItem(
         label = "Registos",
