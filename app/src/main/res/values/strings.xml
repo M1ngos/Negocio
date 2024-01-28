@@ -7,4 +7,13 @@
     <string name="add">Adicionar receita</string>
     <string name="add_dept">Adicionar despesa</string>
     <string name="save_action">Salvar</string>
+    <string name="registry_details">Detalhes do resgisto</string>
+    <string name="edit_registry_details">Editar resgisto</string>
+    <string name="no_item_description">Nenhum registo encontrado</string>
+    <string name="registry_name_req">Nome*</string>
+    <string name="registry_contact_req">Contacto</string>
+    <string name="registry_quantity_req">Número de favos*</string>
+    <string name="registry_value_req">Valor*</string>
+    <string name="yes">Sim</string>
+    <string name="required_fields">*Os campos obrigatórios </string>
 </resources>
