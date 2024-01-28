@@ -46,7 +46,7 @@ import com.mobile.negocio.ui.entries.RegistryEntryScreenAlt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppNavigation(
+fun AppNavGraph(
     modifier: Modifier = Modifier
 ) {
     val navController: NavHostController = rememberNavController()
@@ -106,7 +106,10 @@ fun AppNavigation(
             composable(route = Views.RegisterView.name) {
                 RegisterScreen(
                     navigateToRegistryEntry = { navController.navigate(RegistryEntryDestination.route) },
-                    navigateToRegistryEntryAlt = {  navController.navigate(RegistryEntryDestinationAlt.route) }
+                    navigateToRegistryEntryAlt = {  navController.navigate(RegistryEntryDestinationAlt.route) },
+                    navigateToUpdateRegistry = {
+//                        navController.navigate("${ItemDetailsDestination.route}/${it}")
+                    }
                 )
             }
             composable(route = RegistryEntryDestination.route) {
