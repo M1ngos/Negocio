@@ -61,7 +61,7 @@ fun RegisterScreen (
     navigateToRegistryEntryAlt: () -> Unit,
     navigateToUpdateRegistry: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: RegisterViewModel = viewModel(factory = AppViewModelProvider.Factory )
+    viewModel: RegisterViewModel = viewModel(factory = AppViewModelProvider.Factory)
     ) {
 
     val registerUiState by viewModel.registerUiState.collectAsState()
@@ -108,7 +108,7 @@ fun RegisterScreen (
                             selectedTabIndex = index
                         },
                         text = {
-                            Text(text = navRegistryItem.title)
+                            Text(text = navRegistryItem.title, fontSize = 18.sp)
                         }
                     )
                 }
@@ -200,12 +200,12 @@ private fun IncomeItem(
             ) {
                 Text(
                     text = item.name,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
                     text = item.formatedValue(),
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
@@ -214,12 +214,12 @@ private fun IncomeItem(
             ) {
                 Text(
                     text = "${item.quantity} ${if (item.quantity > 1) "favos" else "favo"}",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
                     text = item.date,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
@@ -239,14 +239,3 @@ fun IncomeCardPreview() {
     }
 }
 
-//@Preview
-//@Composable
-//fun RegisterScreenPreview() {
-//    AppTheme {
-//       RegisterScreen(
-//           navigateToRegistryEntry = { /*TODO*/ },
-//           navigateToRegistryEntryAlt = { /*TODO*/ }) {
-//
-//       }
-//    }
-//}

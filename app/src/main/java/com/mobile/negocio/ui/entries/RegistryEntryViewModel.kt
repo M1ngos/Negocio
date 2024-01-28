@@ -18,6 +18,12 @@ class RegistryEntryViewModel(
     var registryUistate by mutableStateOf(RegistryUiState())
         private set
 
+
+    fun updateStatus(isChecked: Boolean) {
+        registryUistate = registryUistate.copy(
+            incomeDetails = registryUistate.incomeDetails.copy(status = isChecked)
+        )
+    }
     fun updateUiState(incomeDetails: IncomeDetails) {
         registryUistate =
             RegistryUiState(incomeDetails = incomeDetails, isEntryValid = validateInput(incomeDetails))

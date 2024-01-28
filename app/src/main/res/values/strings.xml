@@ -15,5 +15,6 @@
     <string name="registry_quantity_req">Número de favos*</string>
     <string name="registry_value_req">Valor*</string>
     <string name="yes">Sim</string>
-    <string name="required_fields">*Os campos obrigatórios </string>
+    <string name="required_fields">Campos obrigatórios*</string>
+    <string name="registry_now">Pagamento feito? </string>
 </resources>
