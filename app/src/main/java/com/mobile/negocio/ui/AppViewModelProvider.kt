@@ -5,8 +5,11 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mobile.negocio.NegocioApplication
-import com.mobile.negocio.ui.entries.RegistryEntryViewModel
+import com.mobile.negocio.ui.entries.debt.RegistryEntryScreenAlt
+import com.mobile.negocio.ui.entries.debt.RegistyEntryViewModelAlt
+import com.mobile.negocio.ui.entries.income.RegistryEntryViewModel
 import com.mobile.negocio.ui.views.RegisterViewModel
+import com.mobile.negocio.ui.views.RegisterViewModelAlt
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
@@ -16,6 +19,14 @@ object AppViewModelProvider {
 
         initializer {
             RegisterViewModel(negocioApplication().container.itemsRepository)
+        }
+
+        initializer {
+            RegistyEntryViewModelAlt(negocioApplication().container.itemsRepositoryAlt)
+        }
+
+        initializer {
+            RegisterViewModelAlt(negocioApplication().container.itemsRepositoryAlt)
         }
     }
 }

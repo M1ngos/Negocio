@@ -4,14 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.mobile.negocio.data.debt.Debt
+import com.mobile.negocio.data.debt.DebtDao
 import com.mobile.negocio.data.income.Income
 import com.mobile.negocio.data.income.IncomeDao
 
 
-@Database(entities = [Income::class], version = 1, exportSchema = false)
+@Database(entities = [Income::class, Debt::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun incomeDao(): IncomeDao
+    abstract fun debtDao(): DebtDao
 
     companion object {
         @Volatile
