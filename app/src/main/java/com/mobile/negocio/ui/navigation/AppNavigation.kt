@@ -1,5 +1,7 @@
 package com.mobile.negocio.ui.navigation
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -15,11 +17,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -40,6 +46,7 @@ import com.mobile.negocio.ui.entries.income.RegistryEntryScreen
 import com.mobile.negocio.ui.views.DashScreen
 import com.mobile.negocio.ui.views.DebtsScreen
 import com.mobile.negocio.ui.views.RegisterScreen
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +55,17 @@ fun AppNavGraph(
 ) {
     val navController: NavHostController = rememberNavController()
     var selectedNavItem by remember { mutableStateOf(navItems.first()) }
+    val coroutineScope = rememberCoroutineScope()
+    val animatableScale = remember { Animatable(1f) }
+
+
+    LaunchedEffect(selectedNavItem) {
+        // Trigger animation when the selectedNavItem changes
+        coroutineScope.launch {
+            animatableScale.animateTo(1.2f, animationSpec = tween(durationMillis = 300))
+            animatableScale.animateTo(1f, animationSpec = tween(durationMillis = 300))
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -61,7 +79,6 @@ fun AppNavGraph(
                      actions = {
                          IconButton(onClick = { /*TODO*/ }) {
                              Icon(imageVector = Icons.Filled.Settings, contentDescription = "")
-
                          }
                      }
                  )
@@ -72,20 +89,25 @@ fun AppNavGraph(
                 val currentDestination = navBackStackEntry?.destination
                 navItems.forEach { navItem ->
                     NavigationBarItem(
-                        selected = currentDestination?.hierarchy?.any { it.route == navItem.route} == true,
+                        selected = currentDestination?.hierarchy?.any { it.route == navItem.route } == true,
                         onClick = {
                             selectedNavItem = navItem
                             navController.navigate(navItem.route)
                             {
-                            popUpTo(navController.graph.findStartDestination().id){
-                                saveState = true
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                                  },
+                        },
                         icon = {
-                               Icon(imageVector = navItem.selectedIcon , contentDescription = null)
+                            AnimatedIcon(
+                                imageVector = navItem.selectedIcon,
+                                contentDescription = null,
+                                scale = animatableScale.value
+                            )
+//                            Icon(imageVector = navItem.selectedIcon, contentDescription = null)
                         },
                         label = {
                             Text(text = navItem.label)
@@ -186,6 +208,20 @@ fun AlternativeTopBar(
                 }
             }
         }
+    )
+}
+
+
+@Composable
+fun AnimatedIcon(
+    imageVector: ImageVector,
+    contentDescription: String?,
+    scale: Float
+) {
+    Icon(
+        imageVector = imageVector,
+        contentDescription = contentDescription,
+        modifier = Modifier.scale(scale)
     )
 }
 
