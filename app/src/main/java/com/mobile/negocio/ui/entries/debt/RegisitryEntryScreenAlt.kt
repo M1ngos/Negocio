@@ -94,6 +94,7 @@ fun RegistryEntryAltBody(
         )
         Button(
             onClick = onSaveClick,
+            enabled = registryUistateAlt.isEntryValid,
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -160,5 +161,12 @@ fun DebtInputForm(
             enabled = enabled,
             singleLine = true
         )
+
+        if (enabled) {
+            Text(
+                text = stringResource(R.string.required_fields),
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_large))
+            )
+        }
     }
 }
