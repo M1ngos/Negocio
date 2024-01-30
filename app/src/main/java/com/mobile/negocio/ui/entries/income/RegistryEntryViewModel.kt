@@ -1,4 +1,4 @@
-package com.mobile.negocio.ui.entries
+package com.mobile.negocio.ui.entries.income
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,7 +8,6 @@ import com.mobile.negocio.data.income.Income
 import com.mobile.negocio.data.income.IncomeRepository
 import java.text.NumberFormat
 import java.time.LocalDate
-import java.util.Date
 import java.util.Locale
 
 class RegistryEntryViewModel(

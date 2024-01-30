@@ -9,5 +9,6 @@ data class Debt(
     val id: Int = 0,
     val name: String,
     val value: Double,
+    val details: String,
     val date: String
 )

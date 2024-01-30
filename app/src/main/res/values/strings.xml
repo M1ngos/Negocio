@@ -11,10 +11,24 @@
     <string name="edit_registry_details">Editar resgisto</string>
     <string name="no_item_description">Nenhum registo encontrado</string>
     <string name="registry_name_req">Nome*</string>
+    <string name="registry_supplier_req">Fornecedor*</string>
+    <string name="registry_details_req">Detalhes</string>
     <string name="registry_contact_req">Contacto</string>
     <string name="registry_quantity_req">Número de favos*</string>
     <string name="registry_value_req">Valor*</string>
     <string name="yes">Sim</string>
     <string name="required_fields">Campos obrigatórios*</string>
     <string name="registry_now">Pagamento feito? </string>
+    <string name="delete">Apagar registo\n</string>
+    <string name="attention">Atenção</string>
+    <string name="delete_question">Tem certeza de que deseja apagar este registro?</string>
+    <string name="no">Não</string>
+    <string name="details_name">Nome do cliente</string>
+    <string name="registry_quantity">Quantidade de favos\n</string>
+    <string name="registry_value">Valor\n</string>
+    <string name="registry_state">"Pagamento "</string>
+    <string name="registry_state_paid">Feito\n</string>
+    <string name="registry_state_pending">Pendente\n</string>
+    <string name="registry_date">Data do registro</string>
+    <string name="registry_supplier_name">Provedor\n</string>
 </resources>

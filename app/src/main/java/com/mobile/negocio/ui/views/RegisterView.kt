@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -45,9 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.negocio.R
+import com.mobile.negocio.data.debt.Debt
 import com.mobile.negocio.data.income.Income
 import com.mobile.negocio.ui.AppViewModelProvider
-import com.mobile.negocio.ui.entries.formatedValue
+import com.mobile.negocio.ui.entries.debt.formatedValue
+import com.mobile.negocio.ui.entries.income.formatedValue
 import com.mobile.negocio.ui.navigation.navRegistryItems
 import com.mobile.negocio.ui.theme.AppTheme
 import java.time.LocalDate
@@ -60,11 +61,15 @@ fun RegisterScreen (
     navigateToRegistryEntry: () -> Unit,
     navigateToRegistryEntryAlt: () -> Unit,
     navigateToUpdateRegistry: (Int) -> Unit,
+    navigateToUpdateRegistryAlt: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: RegisterViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: RegisterViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModelALt: RegisterViewModelAlt = viewModel(factory = AppViewModelProvider.Factory)
     ) {
 
     val registerUiState by viewModel.registerUiState.collectAsState()
+
+    val registerUiStateAlt by viewModelALt.registerUiStateAlt.collectAsState()
 
     var selectedTabIndex by remember {
         mutableStateOf(0)
@@ -127,11 +132,44 @@ fun RegisterScreen (
                         onItemClick = { navigateToUpdateRegistry(it.id) },
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
                     )
+                    1 -> DebtList(
+                        debtList = registerUiStateAlt.itemList,
+                        onItemClick = { navigateToUpdateRegistryAlt(it.id) },
+                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+                    )
                 }
             }
         }
     }
 }
+
+@Composable
+fun DebtList(
+    debtList: List<Debt>, onItemClick: (Debt) -> Unit, modifier: Modifier
+) {
+    var selectedFilterIndex by remember { mutableStateOf(0) }
+
+    if (debtList.isEmpty()){
+        Text(
+            text = stringResource(R.string.no_item_description),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.padding_large))
+        )
+    } else {
+        LazyColumn(modifier = modifier) {
+            items(items = debtList, key = { it.id }) { item ->
+                    DebtItem(item = item,
+                        modifier = Modifier
+                            .padding(dimensionResource(id = R.dimen.padding_small))
+                            .clickable { onItemClick(item) })
+            }
+        }
+    }
+}
+
+
 
 @Composable
 fun IncomeList(
@@ -143,7 +181,9 @@ fun IncomeList(
         Text(
             text = stringResource(R.string.no_item_description),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.padding_large))
         )
     } else {
         LazyColumn(modifier = modifier) {
@@ -182,6 +222,40 @@ fun DateFilterButton(
             color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
         )
     }
+}
+
+@Composable
+fun DebtItem(
+    item: Debt, modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = item.name,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = item.formatedValue(),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+            Text(
+                text = item.date,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+    }
+
 }
 @Composable
 private fun IncomeItem(
@@ -235,6 +309,16 @@ fun IncomeCardPreview() {
     AppTheme {
         IncomeItem(
             Income(0,"Ana","250.0",250.0, quantity = 1,status = false, date = LocalDate.now().toString())
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DebtCardPreview() {
+    AppTheme {
+        DebtItem(
+            Debt(0,"Racao",5255.0, details = "3 sacos falta buscar 1", date = LocalDate.now().toString())
         )
     }
 }

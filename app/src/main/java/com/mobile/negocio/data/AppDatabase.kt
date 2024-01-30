@@ -10,7 +10,7 @@ import com.mobile.negocio.data.income.Income
 import com.mobile.negocio.data.income.IncomeDao
 
 
-@Database(entities = [Income::class, Debt::class], version = 2, exportSchema = false)
+@Database(entities = [Income::class, Debt::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun incomeDao(): IncomeDao
