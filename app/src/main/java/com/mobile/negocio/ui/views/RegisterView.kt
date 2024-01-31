@@ -11,15 +11,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,8 +38,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -48,6 +56,8 @@ import com.mobile.negocio.data.debt.Debt
 import com.mobile.negocio.data.income.Income
 import com.mobile.negocio.ui.AppViewModelProvider
 import com.mobile.negocio.ui.entries.debt.formatedValue
+import com.mobile.negocio.ui.entries.filterItems
+import com.mobile.negocio.ui.entries.filterItemsAlt
 import com.mobile.negocio.ui.entries.income.formatedValue
 import com.mobile.negocio.ui.navigation.navRegistryItems
 import com.mobile.negocio.ui.theme.AppTheme
@@ -55,7 +65,7 @@ import java.time.LocalDate
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen (
     navigateToRegistryEntry: () -> Unit,
@@ -70,6 +80,13 @@ fun RegisterScreen (
     val registerUiState by viewModel.registerUiState.collectAsState()
 
     val registerUiStateAlt by viewModelALt.registerUiStateAlt.collectAsState()
+
+    var selectedDay by rememberSaveable { mutableStateOf(false) }
+    var selectedWeek by rememberSaveable { mutableStateOf(false) }
+    var selectedMonth by rememberSaveable { mutableStateOf(false) }
+    var selectedFilterIndex by rememberSaveable { mutableIntStateOf(0) }
+
+
 
     var selectedTabIndex by remember {
         mutableStateOf(0)
@@ -119,6 +136,89 @@ fun RegisterScreen (
                 }
             }
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                FilterChip(
+                    onClick = {
+                        selectedDay = !selectedDay
+                        selectedWeek = false
+                        selectedMonth = false
+                        selectedFilterIndex = if(selectedDay) 1 else 0
+                    },
+                    label = {
+                        Text("Hoje")
+                    },
+                    selected = selectedDay,
+                    leadingIcon = if (selectedDay) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Done,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    shape = RoundedCornerShape(8.dp)
+                )
+
+                FilterChip(
+                    onClick = {
+                        selectedWeek = !selectedWeek
+                        selectedDay = false
+                        selectedMonth = false
+                        selectedFilterIndex = if(selectedWeek) 2 else 0
+                    },
+                    label = {
+                        Text("Esta semana")
+                    },
+                    selected = selectedWeek,
+                    leadingIcon = if (selectedWeek) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Done,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    shape = RoundedCornerShape(8.dp)
+                )
+
+                FilterChip(
+                    onClick = {
+                        selectedMonth = !selectedMonth
+                        selectedDay = false
+                        selectedWeek = false
+                        selectedFilterIndex = if(selectedMonth) 3 else 0
+                    },
+                    label = {
+                        Text("Este mês")
+                    },
+                    selected = selectedMonth,
+                    leadingIcon = if (selectedMonth) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Done,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    shape = RoundedCornerShape(8.dp)
+                )
+            }
+
+
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
@@ -128,12 +228,12 @@ fun RegisterScreen (
                 index ->
                 when (index) {
                     0 -> IncomeList(
-                        incomeList = registerUiState.itemList,
+                        incomeList = filterItems(registerUiState.itemList, selectedFilterIndex),
                         onItemClick = { navigateToUpdateRegistry(it.id) },
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
                     )
                     1 -> DebtList(
-                        debtList = registerUiStateAlt.itemList,
+                        debtList = filterItemsAlt(registerUiStateAlt.itemList, selectedFilterIndex),
                         onItemClick = { navigateToUpdateRegistryAlt(it.id) },
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
                     )
@@ -143,12 +243,13 @@ fun RegisterScreen (
     }
 }
 
+
+
+
 @Composable
 fun DebtList(
     debtList: List<Debt>, onItemClick: (Debt) -> Unit, modifier: Modifier
 ) {
-    var selectedFilterIndex by remember { mutableStateOf(0) }
-
     if (debtList.isEmpty()){
         Text(
             text = stringResource(R.string.no_item_description),
@@ -175,8 +276,6 @@ fun DebtList(
 fun IncomeList(
     incomeList: List<Income>, onItemClick: (Income) -> Unit, modifier: Modifier = Modifier
 ) {
-    var selectedFilterIndex by remember { mutableStateOf(0) }
-
     if (incomeList.isEmpty()){
         Text(
             text = stringResource(R.string.no_item_description),
@@ -184,11 +283,12 @@ fun IncomeList(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.padding_large))
+                .fillMaxWidth()
         )
     } else {
         LazyColumn(modifier = modifier) {
             items(items = incomeList, key = { it.id }) { item ->
-                if (item.status == true) {
+                if (item.status) {
                     IncomeItem(item = item,
                         modifier = Modifier
                             .padding(dimensionResource(id = R.dimen.padding_small))

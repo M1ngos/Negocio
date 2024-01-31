@@ -46,6 +46,9 @@ class RegisterViewModelAlt(debtRepository: DebtRepository) : ViewModel() {
 }
 
 
-data class RegisterUiState(val itemList: List<Income> = listOf())
+data class RegisterUiState(val itemList: List<Income> = listOf()) {
+    val count: Int
+        get() = itemList.count { !it.status }
+}
 
 data class RegisterUiStateAlt(val itemList: List<Debt> = listOf())
