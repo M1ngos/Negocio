@@ -1,6 +1,5 @@
-package com.mobile.negocio.ui.entries.debt
+package com.mobile.negocio.ui.entries.income
 
-import android.annotation.SuppressLint
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,26 +29,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.negocio.R
-import com.mobile.negocio.data.debt.Debt
+import com.mobile.negocio.data.income.Income
 import com.mobile.negocio.ui.AppViewModelProvider
 import com.mobile.negocio.ui.navigation.AlternativeTopBar
 import com.mobile.negocio.ui.navigation.NavigationDestination
 import kotlinx.coroutines.launch
 
-object RegistryDetailsDestinationAlt : NavigationDestination {
-    override val route = "registry_details_alt"
-    override val titleRes = R.string.registry_details
+
+object DebtorDetailsDestination : NavigationDestination {
+    override val route = "debtor_details"
+    override val titleRes = R.string.debtor_details
     const val registryIdArg = "registryId"
     val routeWithArgs = "$route/{$registryIdArg}"
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistryDetailsScreenAlt(
+fun DebtorDetailsScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: RegistryDetailsViewModelAlt = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: RegistryDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState = viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -57,27 +56,18 @@ fun RegistryDetailsScreenAlt(
     Scaffold(
         topBar = {
             AlternativeTopBar(
-                title = stringResource(RegistryDetailsDestinationAlt.titleRes),
+                title = stringResource(DebtorDetailsDestination.titleRes),
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
         },
-//    floatingActionButton = {
-//        FloatingActionButton(
-//            onClick = { navigateToEditRegistry(uiState.value.itemDetails.id) },
-//            shape = MaterialTheme.shapes.medium,
-//            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
-//        ) {
-//            Icon(
-//                imageVector = Icons.Default.Edit,
-//                contentDescription = stringResource(R.string.edit_registry_details),
-//            )
-//        }
-//    }
-        modifier = modifier
+         modifier = modifier
     ) { innerPadding ->
-        RegistryDetailsBody(
-            registryDetailsUiState = uiState.value,
+        ItemDetailsBody(
+            itemDetailsUiState = uiState.value,
+            onStateChange = {
+                viewModel.changeState()
+            },
             onDelete = {
                 coroutineScope.launch {
                     viewModel.deleteItem()
@@ -92,8 +82,9 @@ fun RegistryDetailsScreenAlt(
 }
 
 @Composable
-fun RegistryDetailsBody(
-    registryDetailsUiState: RegistryDetailsUiState,
+fun ItemDetailsBody(
+    itemDetailsUiState: RegistryDetailsUiState,
+    onStateChange: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier
 ) {
@@ -103,16 +94,33 @@ fun RegistryDetailsBody(
     ) {
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
 
-        RegistryDetails(
-            item = registryDetailsUiState.itemDetails.toDebtItem(), modifier = Modifier.fillMaxWidth()
+        ItemDetails(
+            item = itemDetailsUiState.itemDetails.toIncomeItem(),
+            modifier = Modifier.fillMaxWidth()
         )
+
+        Button(
+            onClick = onStateChange,
+            shape = MaterialTheme.shapes.medium,
+            enabled = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.padding_medium))
+        ) {
+            Text(stringResource(R.string.change_state))
+        }
+
         Button(
             onClick = { deleteConfirmationRequired = true },
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+            shape = MaterialTheme.shapes.medium,
+            enabled = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.padding_medium))
         ) {
             Text(stringResource(R.string.delete))
         }
+
         if (deleteConfirmationRequired) {
             DeleteConfirmationDialog(
                 onDeleteConfirm = {
@@ -127,10 +135,9 @@ fun RegistryDetailsBody(
 }
 
 
-
 @Composable
-fun RegistryDetails(
-    item: Debt,
+fun ItemDetails(
+    item: Income,
     modifier: Modifier
 ) {
     Column(
@@ -140,7 +147,7 @@ fun RegistryDetails(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ) {
         ItemDetailsRow(
-            labelResID = R.string.registry_supplier_name,
+            labelResID = R.string.details_name,
             itemDetail = item.name,
             modifier = Modifier.padding(
                 horizontal = dimensionResource(
@@ -149,10 +156,29 @@ fun RegistryDetails(
                 )
             )
         )
-
+        ItemDetailsRow(
+            labelResID = R.string.registry_contact_req,
+            itemDetail = item.contact,
+            modifier = Modifier.padding(
+                horizontal = dimensionResource(
+                    id = R.dimen
+                        .padding_medium
+                )
+            )
+        )
+        ItemDetailsRow(
+            labelResID = R.string.registry_quantity,
+            itemDetail = item.quantity.toString(),
+            modifier = Modifier.padding(
+                horizontal = dimensionResource(
+                    id = R.dimen
+                        .padding_medium
+                )
+            )
+        )
         ItemDetailsRow(
             labelResID = R.string.registry_value,
-            itemDetail = item.value.toString(),
+            itemDetail = item.formatedValue(),
             modifier = Modifier.padding(
                 horizontal = dimensionResource(
                     id = R.dimen
@@ -160,10 +186,13 @@ fun RegistryDetails(
                 )
             )
         )
-
         ItemDetailsRow(
-            labelResID = R.string.registry_details,
-            itemDetail = item.details,
+            labelResID = R.string.registry_state,
+            itemDetail = if (item.status) {
+                stringResource(R.string.registry_state_paid)
+            } else {
+                stringResource(R.string.registry_state_pending)
+            },
             modifier = Modifier.padding(
                 horizontal = dimensionResource(
                     id = R.dimen
@@ -171,7 +200,6 @@ fun RegistryDetails(
                 )
             )
         )
-
         ItemDetailsRow(
             labelResID = R.string.registry_date,
             itemDetail = item.date,
@@ -215,5 +243,3 @@ private fun DeleteConfirmationDialog(
             }
         })
 }
-
-

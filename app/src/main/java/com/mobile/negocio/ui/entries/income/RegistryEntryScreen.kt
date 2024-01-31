@@ -108,6 +108,7 @@ fun RegistryEntryBody(
     }
 }
 
+
 @Composable
 fun IncomeInputForm(
     itemDetails: IncomeDetails,
@@ -196,7 +197,7 @@ fun IncomeInputForm(
                 .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Text(text = stringResource(R.string.registry_now))
 
             Checkbox(

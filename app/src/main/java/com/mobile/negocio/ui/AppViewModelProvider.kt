@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mobile.negocio.NegocioApplication
 import com.mobile.negocio.ui.entries.debt.RegistryDetailsViewModelAlt
 import com.mobile.negocio.ui.entries.debt.RegistyEntryViewModelAlt
+import com.mobile.negocio.ui.entries.income.DebtorsDetailsViewModel
 import com.mobile.negocio.ui.entries.income.RegistryDetailsViewModel
 import com.mobile.negocio.ui.entries.income.RegistryEntryViewModel
 import com.mobile.negocio.ui.views.RegisterViewModel
@@ -41,6 +42,12 @@ object AppViewModelProvider {
             RegistryDetailsViewModelAlt(
              this.createSavedStateHandle(),
                 negocioApplication().container.itemsRepositoryAlt
+            )
+        }
+
+        initializer {
+            DebtorsDetailsViewModel(
+                this.createSavedStateHandle()
             )
         }
     }

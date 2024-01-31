@@ -31,4 +31,9 @@
     <string name="registry_state_pending">Pendente\n</string>
     <string name="registry_date">Data do registro</string>
     <string name="registry_supplier_name">Provedor\n</string>
+    <string name="amount_debts">Número de devedores:</string>
+    <string name="debtor_details">Detalhes do devedor\n</string>
+    <string name="edit_debtor_details">Editar detalhes da dívida</string>
+    <string name="change_state">Confirmar pagamento\n</string>
+
 </resources>

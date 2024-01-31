@@ -39,6 +39,8 @@ import com.mobile.negocio.ui.entries.debt.RegistryDetailsDestinationAlt
 import com.mobile.negocio.ui.entries.debt.RegistryDetailsScreenAlt
 import com.mobile.negocio.ui.entries.debt.RegistryEntryDestinationAlt
 import com.mobile.negocio.ui.entries.debt.RegistryEntryScreenAlt
+import com.mobile.negocio.ui.entries.income.DebtorDetailsDestination
+import com.mobile.negocio.ui.entries.income.DebtorDetailsScreen
 import com.mobile.negocio.ui.entries.income.RegistryDetailsDestination
 import com.mobile.negocio.ui.entries.income.RegistryDetailsScreen
 import com.mobile.negocio.ui.entries.income.RegistryEntryDestination
@@ -175,11 +177,27 @@ fun AppNavGraph(
             }
 
             composable(route = Views.DashView.name) {
-                DashScreen()
+                DashScreen(
+                )
             }
             composable(route = Views.DebtsView.name) {
-                DebtsScreen()
+                DebtsScreen(
+                    navigateToUpdateRegistry = {
+                        navController.navigate("${DebtorDetailsDestination.route}/${it}")
+                    },
+                )
             }
+
+            composable(
+                route = DebtorDetailsDestination.routeWithArgs,
+                arguments = listOf(navArgument(DebtorDetailsDestination.registryIdArg) {
+                    type = NavType.IntType
+                })
+            ) {
+                DebtorDetailsScreen(
+                    navigateBack = { navController.navigateUp() })
+            }
+
         }
     }
 }
