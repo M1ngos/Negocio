@@ -45,7 +45,7 @@ import java.time.LocalDate
 
 object RegistryDetailsDestination : NavigationDestination {
     override val route = "registry_details"
-    override val titleRes = R.string.registry_details
+    override val titleRes = R.string.registry_details_income
     const val registryIdArg = "registryId"
     val routeWithArgs = "$route/{$registryIdArg}"
 }

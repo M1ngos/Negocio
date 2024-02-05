@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 
 object RegistryDetailsDestinationAlt : NavigationDestination {
     override val route = "registry_details_alt"
-    override val titleRes = R.string.registry_details
+    override val titleRes = R.string.registry_details_debt
     const val registryIdArg = "registryId"
     val routeWithArgs = "$route/{$registryIdArg}"
 }

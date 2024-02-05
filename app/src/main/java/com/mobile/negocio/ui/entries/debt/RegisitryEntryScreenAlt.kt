@@ -1,5 +1,6 @@
 package com.mobile.negocio.ui.entries.debt
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -45,7 +47,7 @@ fun RegistryEntryScreenAlt(
     viewModelAlt: RegistyEntryViewModelAlt = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
-
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             AlternativeTopBar(
@@ -66,6 +68,9 @@ fun RegistryEntryScreenAlt(
                 coroutineScope.launch {
                     viewModelAlt.saveItem()
                     navigateBack()
+                    Toast.makeText(context,
+                        "Registado com sucesso!",
+                        Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier

@@ -35,5 +35,7 @@
     <string name="debtor_details">Detalhes do devedor\n</string>
     <string name="edit_debtor_details">Editar detalhes da dívida</string>
     <string name="change_state">Confirmar pagamento\n</string>
+    <string name="registry_details_income">Detalhes da receita</string>
+    <string name="registry_details_debt">Detalhes da despesa</string>
 
 </resources>

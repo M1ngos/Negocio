@@ -1,12 +1,14 @@
 package com.mobile.negocio.ui.entries.income
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.negocio.R
@@ -32,7 +34,7 @@ fun RegistryEditScreen(
     viewModel: RegistryEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
-
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             AlternativeTopBar(
@@ -54,6 +56,9 @@ fun RegistryEditScreen(
                 coroutineScope.launch {
                 viewModel.updateItem()
                 navigateBack()
+                    Toast.makeText(context,
+                        "Dados do registo alterados!",
+                        Toast.LENGTH_SHORT).show()
             }
             },
             modifier = Modifier.padding(innerPadding)
