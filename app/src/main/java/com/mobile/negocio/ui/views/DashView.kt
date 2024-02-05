@@ -135,19 +135,21 @@ fun getProfits(incomeList: List<Income>,debtList: List<Debt>):String {
 }
 
 fun getTotalDebt(debtList: List<Debt>): Double {
-    var acumulator = 0.0
+    var accumulator = 0.0
     debtList.forEach { item ->
-        acumulator += item.value
+        accumulator += item.value
     }
-    return acumulator
+    return accumulator
 }
 
 fun getTotalIncome(incomeList: List<Income>): Double {
-    var acumulator = 0.0
+    var accumulator = 0.0
     incomeList.forEach { item ->
-        acumulator += item.value
+        if(item.status == true){
+            accumulator += item.value
+        }
     }
-    return acumulator
+    return accumulator
 }
 
 fun getRandomEntries() = List(4) { entryOf(it, Random.nextFloat() * 16f) }
