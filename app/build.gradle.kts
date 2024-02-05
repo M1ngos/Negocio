@@ -73,9 +73,14 @@ dependencies {
     implementation("com.patrykandpatrick.vico:compose-m3:1.13.1")
 
     val room_version = "2.6.1"
+    val sheets_compose_dialogs = "1.0.2"
 
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:core:$sheets_compose_dialogs")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:$sheets_compose_dialogs")
+
+
 }
