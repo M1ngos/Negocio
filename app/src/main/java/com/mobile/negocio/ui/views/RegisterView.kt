@@ -164,30 +164,30 @@ fun RegisterScreen (
                     shape = RoundedCornerShape(8.dp)
                 )
 
-                FilterChip(
-                    onClick = {
-                        selectedWeek = !selectedWeek
-                        selectedDay = false
-                        selectedMonth = false
-                        selectedFilterIndex = if(selectedWeek) 2 else 0
-                    },
-                    label = {
-                        Text("Esta semana")
-                    },
-                    selected = selectedWeek,
-                    leadingIcon = if (selectedWeek) {
-                        {
-                            Icon(
-                                imageVector = Icons.Filled.Done,
-                                contentDescription = "Done icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
-                            )
-                        }
-                    } else {
-                        null
-                    },
-                    shape = RoundedCornerShape(8.dp)
-                )
+//                FilterChip(
+//                    onClick = {
+//                        selectedWeek = !selectedWeek
+//                        selectedDay = false
+//                        selectedMonth = false
+//                        selectedFilterIndex = if(selectedWeek) 2 else 0
+//                    },
+//                    label = {
+//                        Text("Esta semana")
+//                    },
+//                    selected = selectedWeek,
+//                    leadingIcon = if (selectedWeek) {
+//                        {
+//                            Icon(
+//                                imageVector = Icons.Filled.Done,
+//                                contentDescription = "Done icon",
+//                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+//                            )
+//                        }
+//                    } else {
+//                        null
+//                    },
+//                    shape = RoundedCornerShape(8.dp)
+//                )
 
                 FilterChip(
                     onClick = {

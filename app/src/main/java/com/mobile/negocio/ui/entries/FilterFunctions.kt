@@ -95,13 +95,15 @@ fun filterByWeekAlt(items: List<Debt>): List<Debt> {
 fun filterByMonth(items: List<Income>): List<Income> {
     //TODO: Check Requirements
     return items.filter { income ->
-        isSameMonth(now,income.date)
+//        isSameMonth(now,income.date)
+        isWithinOneMonth(now,income.date)
     }
 }
 
 fun filterByMonthAlt(items: List<Debt>): List<Debt> {
     //TODO: Check Requirements
     return items.filter { debt ->
-        isSameMonth(now,debt.date)
+//        isSameMonth(now,debt.date)
+        isWithinOneMonth(now,debt.date)
     }
 }
