@@ -42,6 +42,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mobile.negocio.ui.entries.debt.RegistryDetailsDestinationAlt
 import com.mobile.negocio.ui.entries.debt.RegistryDetailsScreenAlt
+import com.mobile.negocio.ui.entries.debt.RegistryEditDestinationAlt
+import com.mobile.negocio.ui.entries.debt.RegistryEditScreenAlt
 import com.mobile.negocio.ui.entries.debt.RegistryEntryDestinationAlt
 import com.mobile.negocio.ui.entries.debt.RegistryEntryScreenAlt
 import com.mobile.negocio.ui.entries.debtors.DebtorDetailsDestination
@@ -178,7 +180,7 @@ fun AppNavGraph(
                 })
             ) {
                 RegistryDetailsScreenAlt(
-                /*TODO: ADD feature to edit registry*/
+                    navigateToEditItem = { navController.navigate("${RegistryEditDestinationAlt.route}/$it") },
                     navigateBack = { navController.popBackStack() }
                 )
             }
@@ -218,6 +220,17 @@ fun AppNavGraph(
                 )
             }
 
+            composable(
+                route = RegistryEditDestinationAlt.routeWithArgs,
+                arguments = listOf(navArgument(RegistryEditDestinationAlt.registryIdArg) {
+                    type = NavType.IntType
+                })
+            ) {
+                RegistryEditScreenAlt(
+                    navigateBack = { navController.popBackStack() },
+                    onNavigateUp = { navController.navigateUp() }
+                )
+            }
         }
     }
 }
