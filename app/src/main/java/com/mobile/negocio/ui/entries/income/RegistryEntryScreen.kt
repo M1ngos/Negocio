@@ -27,6 +27,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.mobile.negocio.R
 import com.mobile.negocio.ui.AppViewModelProvider
 import com.mobile.negocio.ui.navigation.AlternativeTopBar
@@ -109,6 +113,7 @@ fun RegistryEntryBody(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IncomeInputForm(
     itemDetails: IncomeDetails,
@@ -120,6 +125,20 @@ fun IncomeInputForm(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ) {
+
+        val calendarState = rememberSheetState()
+
+        CalendarDialog(
+            state = calendarState,
+            config = CalendarConfig(
+                monthSelection = true,
+                yearSelection = true,
+            ),
+            selection = CalendarSelection.Date {date ->
+                onValueChange(itemDetails.copy(date = date.toString() ))
+            }
+        )
+
         OutlinedTextField(
             value = itemDetails.name,
             onValueChange = { onValueChange(itemDetails.copy(name = it)) },
@@ -191,6 +210,12 @@ fun IncomeInputForm(
             enabled = enabled,
             singleLine = true
         )
+        
+        Button(
+            onClick = { calendarState.show() })
+        {
+            Text(text = "Alterar data do registo (Opcional)")    
+        }
 
         Row (
             modifier = Modifier
