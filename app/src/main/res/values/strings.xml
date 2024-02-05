@@ -21,7 +21,7 @@
     <string name="registry_now">Pagamento feito? </string>
     <string name="delete">Apagar registo\n</string>
     <string name="attention">Atenção</string>
-    <string name="delete_question">Tem certeza de que deseja apagar este registro?</string>
+    <string name="delete_question">Tem certeza de que deseja apagar este registo?</string>
     <string name="no">Não</string>
     <string name="details_name">Nome do cliente</string>
     <string name="registry_quantity">Quantidade de favos\n</string>
