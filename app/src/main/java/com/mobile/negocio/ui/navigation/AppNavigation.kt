@@ -2,6 +2,10 @@ package com.mobile.negocio.ui.navigation
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -26,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -39,10 +44,12 @@ import com.mobile.negocio.ui.entries.debt.RegistryDetailsDestinationAlt
 import com.mobile.negocio.ui.entries.debt.RegistryDetailsScreenAlt
 import com.mobile.negocio.ui.entries.debt.RegistryEntryDestinationAlt
 import com.mobile.negocio.ui.entries.debt.RegistryEntryScreenAlt
-import com.mobile.negocio.ui.entries.income.DebtorDetailsDestination
-import com.mobile.negocio.ui.entries.income.DebtorDetailsScreen
+import com.mobile.negocio.ui.entries.debtors.DebtorDetailsDestination
+import com.mobile.negocio.ui.entries.debtors.DebtorDetailsScreen
 import com.mobile.negocio.ui.entries.income.RegistryDetailsDestination
 import com.mobile.negocio.ui.entries.income.RegistryDetailsScreen
+import com.mobile.negocio.ui.entries.income.RegistryEditDestination
+import com.mobile.negocio.ui.entries.income.RegistryEditScreen
 import com.mobile.negocio.ui.entries.income.RegistryEntryDestination
 import com.mobile.negocio.ui.entries.income.RegistryEntryScreen
 import com.mobile.negocio.ui.views.DashScreen
@@ -159,7 +166,7 @@ fun AppNavGraph(
                 })
             ) {
                 RegistryDetailsScreen(
-                /*TODO: ADD feature to edit registry*/
+                    navigateToEditItem = { navController.navigate("${RegistryEditDestination.route}/$it") },
                     navigateBack = { navController.popBackStack() }
                 )
             }
@@ -195,7 +202,20 @@ fun AppNavGraph(
                 })
             ) {
                 DebtorDetailsScreen(
+                    navigateToEditItem = { navController.navigate("${RegistryEditDestination.route}/$it") },
                     navigateBack = { navController.navigateUp() })
+            }
+
+            composable(
+                route = RegistryEditDestination.routeWithArgs,
+                arguments = listOf(navArgument(RegistryEditDestination.registryIdArg) {
+                    type = NavType.IntType
+                })
+            ) {
+                RegistryEditScreen(
+                    navigateBack = { navController.popBackStack() },
+                    onNavigateUp = { navController.navigateUp() }
+                )
             }
 
         }
@@ -229,6 +249,42 @@ fun AlternativeTopBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AlternativeTopBarWithAction(
+    title: String,
+    canNavigateBack: Boolean,
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    navigateUp: () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit
+) {
+    CenterAlignedTopAppBar(
+        title = { Text(title) },
+        modifier = modifier,
+        scrollBehavior = scrollBehavior,
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Voltar"
+                    )
+                }
+            }
+        },
+        actions = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 16.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                actions()
+            }
+        },
+    )
+}
 
 @Composable
 fun AnimatedIcon(
