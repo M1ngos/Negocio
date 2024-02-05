@@ -1,4 +1,4 @@
-package com.mobile.negocio.ui.entries.income
+package com.mobile.negocio.ui.entries.debtors
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,13 +31,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.negocio.R
 import com.mobile.negocio.data.income.Income
 import com.mobile.negocio.ui.AppViewModelProvider
+import com.mobile.negocio.ui.entries.income.IncomeDetails
+import com.mobile.negocio.ui.entries.income.RegistryDetailsUiState
+import com.mobile.negocio.ui.entries.income.RegistryDetailsViewModel
+import com.mobile.negocio.ui.entries.income.formatedValue
+import com.mobile.negocio.ui.entries.income.toIncomeItem
 import com.mobile.negocio.ui.navigation.AlternativeTopBar
 import com.mobile.negocio.ui.navigation.NavigationDestination
+import com.mobile.negocio.ui.theme.AppTheme
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 
 object DebtorDetailsDestination : NavigationDestination {
@@ -47,6 +59,7 @@ object DebtorDetailsDestination : NavigationDestination {
 @Composable
 fun DebtorDetailsScreen(
     navigateBack: () -> Unit,
+    navigateToEditItem: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RegistryDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -61,6 +74,18 @@ fun DebtorDetailsScreen(
                 navigateUp = navigateBack
             )
         },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navigateToEditItem(uiState.value.itemDetails.id) },
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.edit_registry_details),
+                )
+            }
+    },
          modifier = modifier
     ) { innerPadding ->
         ItemDetailsBody(
@@ -76,6 +101,22 @@ fun DebtorDetailsScreen(
             },
             modifier = Modifier
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+        )
+    }
+}
+
+@Preview
+@Composable
+fun Preview(){
+    AppTheme {
+        ItemDetailsBody(
+            itemDetailsUiState = RegistryDetailsUiState(
+                itemDetails = IncomeDetails(1,"Teste","840496280","500","2", date = LocalDate.now().toString())
+            ),
+            onStateChange = {},
+            onDelete = {},
+            modifier = Modifier
                 .verticalScroll(rememberScrollState())
         )
     }
@@ -105,7 +146,7 @@ fun ItemDetailsBody(
             enabled = true,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.padding_medium))
+                .padding(dimensionResource(id = R.dimen.extra_padding_small))
         ) {
             Text(stringResource(R.string.change_state))
         }
@@ -116,7 +157,7 @@ fun ItemDetailsBody(
             enabled = true,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.padding_medium))
+                .padding(dimensionResource(id = R.dimen.extra_padding_small))
         ) {
             Text(stringResource(R.string.delete))
         }
