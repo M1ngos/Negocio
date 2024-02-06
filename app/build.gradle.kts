@@ -81,6 +81,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:core:$sheets_compose_dialogs")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:$sheets_compose_dialogs")
+    implementation("com.exyte:animated-navigation-bar:1.0.0")
 
 
 }
