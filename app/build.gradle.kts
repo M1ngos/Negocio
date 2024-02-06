@@ -53,6 +53,8 @@ android {
 
 
 dependencies {
+    val room_version = "2.6.1"
+    val sheets_compose_dialogs = "1.0.2"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -71,10 +73,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("com.patrykandpatrick.vico:compose-m3:1.13.1")
-
-    val room_version = "2.6.1"
-    val sheets_compose_dialogs = "1.0.2"
-
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
@@ -82,6 +80,5 @@ dependencies {
     implementation ("com.maxkeppeler.sheets-compose-dialogs:core:$sheets_compose_dialogs")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:$sheets_compose_dialogs")
     implementation("com.exyte:animated-navigation-bar:1.0.0")
-
-
+    implementation("com.github.jaikeerthick:Composable-Graphs:1.2.3")
 }
