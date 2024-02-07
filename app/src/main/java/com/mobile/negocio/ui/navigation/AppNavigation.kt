@@ -254,7 +254,8 @@ fun AppNavGraph(
 fun AlternativeTopBar(
     title: String,
     canNavigateBack: Boolean,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
+        .height(50.dp),
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigateUp: () -> Unit = {}
 ) {
