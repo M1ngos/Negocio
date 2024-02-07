@@ -81,4 +81,5 @@ dependencies {
     implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:$sheets_compose_dialogs")
     implementation("com.exyte:animated-navigation-bar:1.0.0")
     implementation("com.github.jaikeerthick:Composable-Graphs:1.2.3")
+    implementation("androidx.compose.material:material-icons-extended")
 }
