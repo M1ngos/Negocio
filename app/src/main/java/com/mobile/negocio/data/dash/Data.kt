@@ -5,9 +5,25 @@ import com.mobile.negocio.data.debt.Debt
 import com.mobile.negocio.data.income.Income
 import java.text.NumberFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 
+
+fun calculateDays(item: Income): Long {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val debtorLocalDate = LocalDate.parse(item.date, formatter)
+    val currentDate = LocalDate.now()
+
+    // Calculate the difference in days until 30 days
+    val daysTo30Days = 30 - calculateDaysDifference(debtorLocalDate, currentDate)
+
+    return if (daysTo30Days > 0) daysTo30Days else 0
+}
+
+fun calculateDaysDifference(fromDate: LocalDate, toDate: LocalDate): Long {
+    return java.time.temporal.ChronoUnit.DAYS.between(fromDate, toDate)
+}
 
 fun createMonthlyData(itemList: List<Income>): List<LineData> {
     val months = listOf(
