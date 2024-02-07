@@ -1,21 +1,22 @@
 package com.mobile.negocio.ui.views
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -26,26 +27,33 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mobile.negocio.data.debt.Debt
-import com.mobile.negocio.data.income.Income
+import com.jaikeerthick.composable_graphs.composables.line.LineGraph
+import com.jaikeerthick.composable_graphs.composables.line.model.LineData
+import com.jaikeerthick.composable_graphs.composables.line.style.LineGraphColors
+import com.jaikeerthick.composable_graphs.composables.line.style.LineGraphFillType
+import com.jaikeerthick.composable_graphs.composables.line.style.LineGraphStyle
+import com.jaikeerthick.composable_graphs.composables.line.style.LineGraphVisibility
+import com.mobile.negocio.R
+import com.mobile.negocio.data.dash.createMonthlyData
+import com.mobile.negocio.data.dash.getLiquidProfit
+import com.mobile.negocio.data.dash.getTotalDebt
+import com.mobile.negocio.data.dash.getTotalIncome
 import com.mobile.negocio.ui.AppViewModelProvider
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.column.columnChart
-import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import com.patrykandpatrick.vico.core.entry.entryOf
-import kotlinx.coroutines.launch
+import com.mobile.negocio.ui.theme.AppTheme
 import java.text.NumberFormat
 import java.util.Locale
-import kotlin.random.Random
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,10 +65,9 @@ fun DashScreen (
 
     val registerUiState by viewModel.registerUiState.collectAsState()
     val registerUiStateAlt by viewModelALt.registerUiStateAlt.collectAsState()
-
-    val chartEntryModelProducer = ChartEntryModelProducer(getRandomEntries())
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     Scaffold(
        snackbarHost = {
@@ -69,87 +76,125 @@ fun DashScreen (
     ) {
         Column(
             modifier = Modifier
-                .clickable {
-                    scope.launch {
-                        snackbarHostState.showSnackbar("Ainda em desevolvimento")
-                    }
-                }
                 .fillMaxWidth(),
         ) {
-            Chart(
-                chart = columnChart(),
-                chartModelProducer = chartEntryModelProducer,
-                startAxis = rememberStartAxis(),
-                bottomAxis = rememberBottomAxis(),
+//            Log.d("data:", months.toString())
+            Log.d("data:", createMonthlyData(registerUiState.itemList).toString())
+
+            LineGraph(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                data = createMonthlyData(registerUiState.itemList),
+                onPointClick = { value: LineData ->
+                    Toast.makeText(context,"Cartões vendidos em ${value.x} ",Toast.LENGTH_SHORT).show()
+                },
+                style = LineGraphStyle(
+                    visibility = LineGraphVisibility(
+                        isCrossHairVisible = false,
+                        isYAxisLabelVisible = true
+                    ),
+                    colors = LineGraphColors(
+                        lineColor = MaterialTheme.colorScheme.primary,
+                        pointColor = MaterialTheme.colorScheme.primary,
+                        clickHighlightColor = MaterialTheme.colorScheme.inversePrimary,
+                        fillType = LineGraphFillType.Gradient(
+                            brush = Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.inversePrimary))
+                        )
+                    )
+                ),
             )
-            ProfitCard(
-                registerUiState.itemList,
-                registerUiStateAlt.itemList
+
+            StackedTextCard(
+                painter1 = painterResource(id = R.drawable.profit),
+                painter2 = painterResource(id = R.drawable.loss),
+                gains = "+${getTotalIncome(registerUiState.itemList)}",
+                loss = "-${getTotalDebt(registerUiStateAlt.itemList)}",
+                profit = getLiquidProfit(registerUiState.itemList,registerUiStateAlt.itemList)
             )
         }
     }
-
 }
-
 
 @Composable
-fun ProfitCard(
-    incomeList: List<Income>,
-    debtList: List<Debt>,
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+fun StackedTextCard(
+    painter1: Painter,
+    painter2: Painter,
+    gains: String,
+    loss: String,
+    profit: Double,
 ) {
     Card(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.primary)
+            .height(250.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        )
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .padding(16.dp)
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowUp,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(25.dp)
-            )
-            Spacer(modifier = Modifier.width(25.dp))
-            Text(
-                text = "Lucro: "+getProfits(incomeList,debtList),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painter1,
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier
+                        .size(80.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(text = "Receitas", style = MaterialTheme.typography.titleLarge)
+                    Text(text = gains, style = MaterialTheme.typography.titleLarge)
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painter2,
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier
+                        .size(80.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(text = "Despesas", style = MaterialTheme.typography.titleLarge)
+                    Text(text = loss, style = MaterialTheme.typography.titleLarge)
+                }
+            }
+            Row {
+                Text(text = "Lucro líquido : ", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(
+                    text = NumberFormat.getCurrencyInstance(Locale("pt","MZ")).format(profit),
+                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold ,
+                    color = if(profit > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
+            }
         }
     }
 }
 
-fun getProfits(incomeList: List<Income>,debtList: List<Debt>):String {
-    return  NumberFormat.getCurrencyInstance(Locale("pt","MZ")).format(getTotalIncome(incomeList) - getTotalDebt(debtList))
 
-}
-
-fun getTotalDebt(debtList: List<Debt>): Double {
-    var accumulator = 0.0
-    debtList.forEach { item ->
-        accumulator += item.value
+@Preview
+@Composable
+fun StackedTextCardWithPreview() {
+    AppTheme {
+        StackedTextCard(
+            painter1 = painterResource(id = R.drawable.profit),
+            painter2 = painterResource(id = R.drawable.loss),
+            gains = "+1500",
+            loss = "-500",
+            profit = 10000.0
+        )
     }
-    return accumulator
 }
-
-fun getTotalIncome(incomeList: List<Income>): Double {
-    var accumulator = 0.0
-    incomeList.forEach { item ->
-        if(item.status == true){
-            accumulator += item.value
-        }
-    }
-    return accumulator
-}
-
-fun getRandomEntries() = List(4) { entryOf(it, Random.nextFloat() * 16f) }
