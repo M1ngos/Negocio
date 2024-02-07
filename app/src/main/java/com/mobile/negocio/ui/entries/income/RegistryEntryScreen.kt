@@ -226,7 +226,7 @@ fun IncomeInputForm(
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = stringResource(R.string.registry_now))
@@ -241,7 +241,7 @@ fun IncomeInputForm(
         if (enabled) {
             Text(
                 text = stringResource(R.string.required_fields),
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_large))
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.extra_padding_small))
             )
         }
     }
