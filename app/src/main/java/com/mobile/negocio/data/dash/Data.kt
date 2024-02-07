@@ -37,6 +37,7 @@ fun createMonthlyData(itemList: List<Income>): List<LineData> {
 
 fun getTotalInMonth(itemList: List<Income>, month: String): Int {
     val currentYear = LocalDate.now().year
+    var accumulator: Int = 0
     val toCompare = when (month) {
         "Jan" -> "$currentYear-01"
         "Fev" -> "$currentYear-02"
@@ -53,8 +54,14 @@ fun getTotalInMonth(itemList: List<Income>, month: String): Int {
         else -> throw IllegalArgumentException("Invalid month: $month")
     }
 
-    return itemList.filter { it.date.startsWith(toCompare) }
-        .count()
+    val monthList = itemList.filter {
+        it.date.startsWith(toCompare)
+    }
+
+    monthList.forEach {
+        accumulator+=it.quantity
+    }
+    return accumulator
 }
 
 fun getTotalIncome(itemList: List<Income>): String {
