@@ -89,7 +89,21 @@ fun DebtsScreen (
                     }
                 },
                 title = {
-                    Text("Número de devedores: ${registerUiState.count}", fontSize = 18.sp)
+                    Column(
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "Número de devedores: ${registerUiState.count}",
+                            fontSize = 18.sp,
+//                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            "Total das dívidas: ${registerUiState.totalDebt}",
+                            fontSize = 18.sp,
+//                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
             )
         },

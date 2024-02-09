@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import java.text.NumberFormat
+import java.util.Locale
 
 /**
  * ViewModel to retrieve all items in the Room database.
@@ -49,6 +51,14 @@ class RegisterViewModelAlt(debtRepository: DebtRepository) : ViewModel() {
 data class RegisterUiState(val itemList: List<Income> = listOf()) {
     val count: Int
         get() = itemList.count { !it.status }
+    val totalDebt: String
+        get() {
+            val formattedTotalDebt = itemList
+                .filter { !it.status }
+                .sumOf { it.value }
+
+            return NumberFormat.getCurrencyInstance(Locale("pt","MZ")).format(formattedTotalDebt)
+        }
 }
 
 data class RegisterUiStateAlt(val itemList: List<Debt> = listOf())
