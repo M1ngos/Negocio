@@ -10,7 +10,6 @@ import java.time.temporal.WeekFields
 import java.util.Locale
 
 
-private val now: String = LocalDate.now().toString()
 
 fun filterItems(items: List<Income>, selectedFilterIndex: Int): List<Income> {
     return when (selectedFilterIndex) {
@@ -70,30 +69,34 @@ fun isSameMonth(currentDate: String, dateToCheck: String): Boolean {
 
 
 fun filterByToday(items: List<Income>): List<Income> {
+    val now: String = LocalDate.now().toString()
     return items.filter { income ->
         income.date == now
     }
 }
 
 fun filterByTodayAlt(items: List<Debt>): List<Debt> {
+    val now: String = LocalDate.now().toString()
     return items.filter { debt ->
         debt.date == now
     }
 }
 
 fun filterByWeek(items: List<Income>): List<Income> {
+    val now: String = LocalDate.now().toString()
     return items.filter { income ->
         isWithinThisWeek(now,income.date)
     }
 }
 
 fun filterByWeekAlt(items: List<Debt>): List<Debt> {
+    val now: String = LocalDate.now().toString()
     return items.filter { debt ->
         isWithinThisWeek(now,debt.date)
     }
 }
 fun filterByMonth(items: List<Income>): List<Income> {
-    //TODO: Check Requirements
+    val now: String = LocalDate.now().toString()
     return items.filter { income ->
 //        isSameMonth(now,income.date)
         isWithinOneMonth(now,income.date)
@@ -101,7 +104,7 @@ fun filterByMonth(items: List<Income>): List<Income> {
 }
 
 fun filterByMonthAlt(items: List<Debt>): List<Debt> {
-    //TODO: Check Requirements
+    val now: String = LocalDate.now().toString()
     return items.filter { debt ->
 //        isSameMonth(now,debt.date)
         isWithinOneMonth(now,debt.date)
