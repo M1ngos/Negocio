@@ -55,6 +55,7 @@ import com.mobile.negocio.data.income.Income
 import com.mobile.negocio.ui.AppViewModelProvider
 import com.mobile.negocio.ui.entries.income.formatedValue
 
+private const val MAX_NAME_LENGTH: Int = 10
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,12 +97,10 @@ fun DebtsScreen (
                         Text(
                             "Número de devedores: ${registerUiState.count}",
                             fontSize = 18.sp,
-//                            modifier = Modifier.weight(1f)
                         )
                         Text(
                             "Total das dívidas: ${registerUiState.totalDebt}",
                             fontSize = 18.sp,
-//                            modifier = Modifier.weight(1f)
                         )
                     }
                 }
@@ -200,7 +199,11 @@ private fun IncomeItem(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = item.name,
+                    text = if (item.name.length <= MAX_NAME_LENGTH) {
+                        item.name
+                    } else {
+                        "${item.name.take(MAX_NAME_LENGTH)}..."
+                    },
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(Modifier.weight(1f))
@@ -225,7 +228,6 @@ private fun IncomeItem(
 }
 
 fun sendWhatsAppMessage(phoneNumber: String, context: Context, income: Income) {
-//    for (phoneNumber in phoneNumbers) {
         val formattedPhoneNumber = if (phoneNumber.startsWith("+258")) {
             phoneNumber
         } else {
@@ -240,9 +242,8 @@ fun sendWhatsAppMessage(phoneNumber: String, context: Context, income: Income) {
                 "- Valor: ${income.value}\n" +
                 "- Quandidade de favos: ${income.quantity}\n" +
                 "- Data da venda: ${income.date}" +
-                "\n\nPor favor, garanta o pagamento dentro do prazo de 30 dias" +
+                "\n\nPor favor, garanta a liquidação da divida no mais curto espaço de tempo possível " +
                 "\n\n*Mensagem gerada por um computador*")}")
         startActivity(context, intent, null)
-//    }
 }
 
