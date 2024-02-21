@@ -160,7 +160,7 @@ fun RegistryDetails(
 
         ItemDetailsRow(
             labelResID = R.string.registry_value,
-            itemDetail = item.value.toString(),
+            itemDetail = item.formatedValue(),
             modifier = Modifier.padding(
                 horizontal = dimensionResource(
                     id = R.dimen
