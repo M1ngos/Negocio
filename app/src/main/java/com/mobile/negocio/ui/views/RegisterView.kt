@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -346,8 +347,14 @@ fun IncomeItem(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = item.name,
+                    text = if (item.name.length > 12) {
+                        item.name.take(12) + "..." // Shorten the name
+                    } else {
+                        item.name
+                    },
                     style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
@@ -381,7 +388,7 @@ fun IncomeItem(
 fun IncomeCardPreview() {
     AppTheme {
         IncomeItem(
-            Income(0,"Ana","250.0",250.0, quantity = 1,status = false, date = LocalDate.now().toString())
+            Income(0,"AnaAnaAnaAnaAna","250.0",250.0, quantity = 1,status = false, date = LocalDate.now().toString())
         )
     }
 }
