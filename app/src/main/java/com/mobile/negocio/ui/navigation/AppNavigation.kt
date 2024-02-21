@@ -1,12 +1,12 @@
 package com.mobile.negocio.ui.navigation
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +52,9 @@ import com.exyte.animatednavbar.animation.balltrajectory.Straight
 import com.exyte.animatednavbar.animation.indendshape.Height
 import com.exyte.animatednavbar.animation.indendshape.shapeCornerRadius
 import com.exyte.animatednavbar.utils.noRippleClickable
+import com.mobile.negocio.ui.components.search.SearchDestination
+import com.mobile.negocio.ui.components.search.SearchScreen
+import com.mobile.negocio.ui.components.settings.SettingsDialog
 import com.mobile.negocio.ui.entries.debt.RegistryDetailsDestinationAlt
 import com.mobile.negocio.ui.entries.debt.RegistryDetailsScreenAlt
 import com.mobile.negocio.ui.entries.debt.RegistryEditDestinationAlt
@@ -84,32 +88,18 @@ fun AppNavGraph(
         2 -> "Devedores"
         else -> {""}
     }
-    var searchQuery by remember { mutableStateOf("") }
-    var active by remember { mutableStateOf(false) }
+    var showSettingsDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showSettingsDialog) {
+        SettingsDialog(
+            onDismiss = { showSettingsDialog = false },
+        )
+    }
 
     Scaffold(
         modifier = Modifier.padding(all = 12.dp),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(text = selectedLabel) },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            Toast.makeText(context, "Ainda em desenvolvimento", Toast.LENGTH_SHORT).show()
-                        }
-                    ) {
-                        Icon(imageVector = Icons.Filled.Search, contentDescription = "")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        Toast.makeText(context, "Ainda em desenvolvimento", Toast.LENGTH_SHORT).show()
-                    }) {
-                        Icon(imageVector = Icons.Filled.Settings, contentDescription = "")
-                    }
-                }
-            )
-        },
         bottomBar = {
             AnimatedNavigationBar(
                 modifier = Modifier.height(64.dp),
@@ -151,108 +141,134 @@ fun AppNavGraph(
             }
         }
     ) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = Views.RegisterView.name,
-            modifier = Modifier
-                .padding(paddingValues)
-            ) {
+        Column(Modifier.fillMaxSize()) {
 
-            composable(route = Views.RegisterView.name) {
-                RegisterScreen(
-                    navigateToRegistryEntry = { navController.navigate(RegistryEntryDestination.route) },
-                    navigateToRegistryEntryAlt = {  navController.navigate(RegistryEntryDestinationAlt.route) },
-                    navigateToUpdateRegistry = {
-                        navController.navigate("${RegistryDetailsDestination.route}/${it}")
-                    },
-                    navigateToUpdateRegistryAlt = {
-                        navController.navigate("${RegistryDetailsDestinationAlt.route}/${it}")
-                    }
-                )
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+
+            if (currentDestination != null) {
+                if (!currentDestination.route.equals(SearchDestination.route)) {
+                    TopAppBar(
+                        title = selectedLabel,
+                        navigationIcon = Icons.Default.Search,
+                        onNavigationClick = { navController.navigate(SearchDestination.route) },
+                        actionIcon = Icons.Default.Settings,
+                        onActionClick = { showSettingsDialog = true }
+                    )
+                }
             }
 
-            composable(route = RegistryEntryDestination.route) {
-                RegistryEntryScreen(
-                    navigateBack = { navController.popBackStack()},
-                    onNavigateUp = { navController.navigateUp()}
-                )
-            }
+            NavHost(
+                navController = navController,
+                startDestination = Views.RegisterView.name,
+                modifier = Modifier
+                    .padding(paddingValues)
+                ) {
 
-            composable(route = RegistryEntryDestinationAlt.route) {
-                RegistryEntryScreenAlt(
-                    navigateBack = { navController.popBackStack()},
-                    onNavigateUp = { navController.navigateUp()}
-                )
-            }
+                composable(route = Views.RegisterView.name) {
+                    RegisterScreen(
+                        navigateToRegistryEntry = { navController.navigate(RegistryEntryDestination.route) },
+                        navigateToRegistryEntryAlt = {  navController.navigate(RegistryEntryDestinationAlt.route) },
+                        navigateToUpdateRegistry = {
+                            navController.navigate("${RegistryDetailsDestination.route}/${it}")
+                        },
+                        navigateToUpdateRegistryAlt = {
+                            navController.navigate("${RegistryDetailsDestinationAlt.route}/${it}")
+                        }
+                    )
+                }
 
-            composable(
-                route = RegistryDetailsDestination.routeWithArgs,
-                arguments = listOf(navArgument(RegistryDetailsDestination.registryIdArg) {
-                    type = NavType.IntType
-                })
-            ) {
-                RegistryDetailsScreen(
-                    navigateToEditItem = { navController.navigate("${RegistryEditDestination.route}/$it") },
-                    navigateBack = { navController.popBackStack() }
-                )
-            }
+                composable(route = SearchDestination.route) {
+                    SearchScreen(
+                        onIncomeClick = { navController.navigate("${RegistryDetailsDestination.route}/${it}")  },
+                        onDebtClick = { navController.navigate("${RegistryDetailsDestinationAlt.route}/${it}") },
+                        onBackClick = { navController.popBackStack() }
+                    )
+                }
 
-            composable(
-                route = RegistryDetailsDestinationAlt.routeWithArgs,
-                arguments = listOf(navArgument(RegistryDetailsDestinationAlt.registryIdArg) {
-                    type = NavType.IntType
-                })
-            ) {
-                RegistryDetailsScreenAlt(
-                    navigateToEditItem = { navController.navigate("${RegistryEditDestinationAlt.route}/$it") },
-                    navigateBack = { navController.popBackStack() }
-                )
-            }
+                composable(route = RegistryEntryDestination.route) {
+                    RegistryEntryScreen(
+                        navigateBack = { navController.popBackStack()},
+                        onNavigateUp = { navController.navigateUp()}
+                    )
+                }
 
-            composable(route = Views.DashView.name) {
-                DashScreen()
-            }
-            composable(route = Views.DebtsView.name) {
-                DebtsScreen(
-                    navigateToUpdateRegistry = {
-                        navController.navigate("${DebtorDetailsDestination.route}/${it}")
-                    },
-                )
-            }
+                composable(route = RegistryEntryDestinationAlt.route) {
+                    RegistryEntryScreenAlt(
+                        navigateBack = { navController.popBackStack()},
+                        onNavigateUp = { navController.navigateUp()}
+                    )
+                }
 
-            composable(
-                route = DebtorDetailsDestination.routeWithArgs,
-                arguments = listOf(navArgument(DebtorDetailsDestination.registryIdArg) {
-                    type = NavType.IntType
-                })
-            ) {
-                DebtorDetailsScreen(
-                    navigateToEditItem = { navController.navigate("${RegistryEditDestination.route}/$it") },
-                    navigateBack = { navController.navigateUp() })
-            }
+                composable(
+                    route = RegistryDetailsDestination.routeWithArgs,
+                    arguments = listOf(navArgument(RegistryDetailsDestination.registryIdArg) {
+                        type = NavType.IntType
+                    })
+                ) {
+                    RegistryDetailsScreen(
+                        navigateToEditItem = { navController.navigate("${RegistryEditDestination.route}/$it") },
+                        navigateBack = { navController.popBackStack() }
+                    )
+                }
 
-            composable(
-                route = RegistryEditDestination.routeWithArgs,
-                arguments = listOf(navArgument(RegistryEditDestination.registryIdArg) {
-                    type = NavType.IntType
-                })
-            ) {
-                RegistryEditScreen(
-                    navigateBack = { navController.popBackStack() },
-                    onNavigateUp = { navController.navigateUp() }
-                )
-            }
+                composable(
+                    route = RegistryDetailsDestinationAlt.routeWithArgs,
+                    arguments = listOf(navArgument(RegistryDetailsDestinationAlt.registryIdArg) {
+                        type = NavType.IntType
+                    })
+                ) {
+                    RegistryDetailsScreenAlt(
+                        navigateToEditItem = { navController.navigate("${RegistryEditDestinationAlt.route}/$it") },
+                        navigateBack = { navController.popBackStack() }
+                    )
+                }
 
-            composable(
-                route = RegistryEditDestinationAlt.routeWithArgs,
-                arguments = listOf(navArgument(RegistryEditDestinationAlt.registryIdArg) {
-                    type = NavType.IntType
-                })
-            ) {
-                RegistryEditScreenAlt(
-                    navigateBack = { navController.popBackStack() },
-                    onNavigateUp = { navController.navigateUp() }
-                )
+                composable(route = Views.DashView.name) {
+                    DashScreen()
+                }
+                composable(route = Views.DebtsView.name) {
+                    DebtsScreen(
+                        navigateToUpdateRegistry = {
+                            navController.navigate("${DebtorDetailsDestination.route}/${it}")
+                        },
+                    )
+                }
+
+                composable(
+                    route = DebtorDetailsDestination.routeWithArgs,
+                    arguments = listOf(navArgument(DebtorDetailsDestination.registryIdArg) {
+                        type = NavType.IntType
+                    })
+                ) {
+                    DebtorDetailsScreen(
+                        navigateToEditItem = { navController.navigate("${RegistryEditDestination.route}/$it") },
+                        navigateBack = { navController.navigateUp() })
+                }
+
+                composable(
+                    route = RegistryEditDestination.routeWithArgs,
+                    arguments = listOf(navArgument(RegistryEditDestination.registryIdArg) {
+                        type = NavType.IntType
+                    })
+                ) {
+                    RegistryEditScreen(
+                        navigateBack = { navController.popBackStack() },
+                        onNavigateUp = { navController.navigateUp() }
+                    )
+                }
+
+                composable(
+                    route = RegistryEditDestinationAlt.routeWithArgs,
+                    arguments = listOf(navArgument(RegistryEditDestinationAlt.registryIdArg) {
+                        type = NavType.IntType
+                    })
+                ) {
+                    RegistryEditScreenAlt(
+                        navigateBack = { navController.popBackStack() },
+                        onNavigateUp = { navController.navigateUp() }
+                    )
+                }
             }
         }
     }

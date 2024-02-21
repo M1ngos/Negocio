@@ -254,6 +254,7 @@ fun DebtList(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.padding_large))
+                .fillMaxWidth()
         )
     } else {
         LazyColumn(modifier = modifier) {
@@ -330,7 +331,7 @@ fun DebtItem(
 
 }
 @Composable
-private fun IncomeItem(
+fun IncomeItem(
     item: Income, modifier: Modifier = Modifier
 ) {
     Card(

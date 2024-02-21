@@ -53,6 +53,7 @@ android {
 
 
 dependencies {
+    implementation("com.google.android.gms:play-services-oss-licenses:17.0.1")
     val room_version = "2.6.1"
     val sheets_compose_dialogs = "1.0.2"
 

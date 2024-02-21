@@ -37,5 +37,9 @@
     <string name="change_state">Confirmar pagamento\n</string>
     <string name="registry_details_income">Detalhes da receita</string>
     <string name="registry_details_debt">Detalhes da despesa</string>
+    <string name="settings_title">Opções</string>
+    <string name="dismiss_dialog_button_text">Sair\n</string>
+    <string name="licenses">Licença</string>
+    <string name="dev">Desenvolvedor</string>
 
 </resources>
